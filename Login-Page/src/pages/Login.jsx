@@ -80,7 +80,7 @@ export default function Login() {
                       <label>Remember me</label>
                     </div>
                     <div className="forget-pass">
-                        <Link className="text-blue-400">Forget Password?</Link>
+                        <Link to="forgotpassword" className="text-blue-400">Forget Password?</Link>
                     </div>
                   </div>
                   <button
