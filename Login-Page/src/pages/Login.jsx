@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import { auth } from "../firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,16 +28,35 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
 
-      // Qeydiyyatdan keçmiş email-ləri yadda saxla
       let savedEmails = JSON.parse(localStorage.getItem("savedEmails")) || [];
       if (!savedEmails.includes(values.email)) {
         savedEmails.push(values.email);
         localStorage.setItem("savedEmails", JSON.stringify(savedEmails));
       }
 
-      navigate("/home");
+      toast.success("✅ Logged in successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
+      setTimeout(() => navigate("/home"), 2000); // 2 saniyə sonra yönləndir
     } catch (error) {
-      alert(error.message);
+      toast.error(`❌ ${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setSubmitting(false);
   };
@@ -44,8 +65,9 @@ export default function Login() {
     <div className="container bg-black h-screen text-white flex justify-center items-center">
       <div className="login-page border w-[450px] rounded-xl p-6 border-solid border-gray-100 flex flex-col items-center">
         <h2 className="text-4xl text-white p-6 text-center font-medium">Login</h2>
+
         <Formik
-          initialValues={{ email: "", password: "" }} 
+          initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
           onSubmit={handleSubmit}
         >
@@ -72,7 +94,6 @@ export default function Login() {
               </div>
 
               <div className="flex justify-between items-center mb-4">
-                {/* Remember Me */}
                 <label className="flex items-center text-sm">
                   <input
                     type="checkbox"
@@ -83,7 +104,6 @@ export default function Login() {
                   Remember me
                 </label>
 
-                {/* Forget Password */}
                 <div className="forget-pass">
                   <Link to="forgotpassword" className="text-blue-400">
                     Forgot Password?
@@ -109,6 +129,9 @@ export default function Login() {
           )}
         </Formik>
       </div>
+
+      {/* ToastContainer ƏLAVƏ EDİLDİ */}
+      <ToastContainer />
     </div>
   );
 }

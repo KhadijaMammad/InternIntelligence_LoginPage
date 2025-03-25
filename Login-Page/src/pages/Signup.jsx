@@ -4,6 +4,8 @@ import * as Yup from "yup";
 import { auth } from "../firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -21,10 +23,30 @@ export default function SignUp() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       await createUserWithEmailAndPassword(auth, values.email, values.password);
-      alert("Registration successful!");
-      navigate("/");
+
+      toast.success("✅ Registration successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
+      setTimeout(() => navigate("/"), 2000); // 2 saniyə sonra yönləndir
     } catch (error) {
-      alert(error.message);
+      toast.error(`❌ ${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setSubmitting(false);
   };
@@ -85,6 +107,9 @@ export default function SignUp() {
           <Link to="/" className="text-blue-400">Login</Link>
         </div>
       </div>
+
+      {/* ToastContainer əlavə edildi */}
+      <ToastContainer />
     </div>
   );
 }
